@@ -2,9 +2,9 @@ version: 0.2
 
 env:
   parameter-store:
-    USERNAME: /myapp/docker-credentials/username
-    PASSWORD: /myapp/docker-credentials/password
-    KEY:  /myapp/api/key
+    USERNAME: myapp-docker-credentials-username
+    PASSWORD: myapp-docker-credentials-password
+    KEY:  1.1
 
         
 phases:
@@ -21,12 +21,13 @@ phases:
       - echo "dependencies installed"
   build:
     commands:
-      - docker build . -t inderharrysingh/netflix-react-app:latest --build-arg TMDB_V3_API_KEY=$KEY
+      #- docker build . -t inderharrysingh/netflix-react-app:latest --build-arg TMDB_V3_API_KEY=$KEY
+       docker build . -t $USERNAME/netflix-react-app:latest
   post_build:
     commands:
       - echo "waiting right now"
-      - docker login -u $USERNAME -p $PASSWORD
-      - docker push inderharrysingh/netflix-react-app:latest
+      - echo "$PASSWORD" | docker login -u $USERNAME -p --password-stdin
+      - docker push $USERNAME/netflix-react-app:latest
 artifacts:
   files:
     - '**/*'
